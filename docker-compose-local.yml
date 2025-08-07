@@ -1,0 +1,25 @@
+services:
+  gym-recommendation-redis:
+    container_name: gym-recommendation-redis
+    build:
+      dockerfile: Dockerfile
+      context: ./redis
+    image: dockerosw/gym-recommendation-redis
+    ports:
+      - "6379:6379"
+
+  gym-recommendation-database:
+    container_name: gym-recommendation-database
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    image: dockerosw/gym-recommendation-database
+    environment:
+      - MARIADB_DATABASE=gym-recommendation
+      - MARIADB_ROOT_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+
+
