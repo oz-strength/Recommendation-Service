@@ -46,6 +46,8 @@ dependencies {
     testImplementation "org.testcontainers:spock:1.21.3"
     testImplementation "org.testcontainers:mariadb:1.21.3"
 
+    // CSV 파싱
+    implementation 'com.opencsv:opencsv:5.9'
 }
 
 tasks.named('test') {
