@@ -2,6 +2,7 @@ package com.oz.project.direction.service;
 
 import com.oz.project.api.dto.DocumentDto;
 import com.oz.project.direction.entity.Direction;
+import com.oz.project.direction.repository.DirectionRepository;
 import com.oz.project.gym.service.GymSearchService;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +11,8 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Service
@@ -20,6 +23,13 @@ public class DirectionService {
     private static final double RADIUS_KM = 10.0; // 반경 10km
 
     private final GymSearchService gymSearchService;
+    private final DirectionRepository directionRepository;
+
+    @Transactional
+    public List<Direction> saveAll(List<Direction> directionList) {
+        if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
+        return  directionRepository.saveAll(directionList);
+    }
 
     public List<Direction> buildDirectionList(DocumentDto documentDto) {
 
