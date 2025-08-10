@@ -49,4 +49,9 @@ public class GymRepositoryService {
             log.error("[GymRepositoryService][updateGymAddressWithoutTransaction] Gym with id {} not found", id);
         });
     }
+
+    @Transactional(readOnly = true)
+    public List<Gym> findAll() {
+        return gymRepository.findAll();
+    }
 }
