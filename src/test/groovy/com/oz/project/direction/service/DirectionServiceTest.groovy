@@ -1,7 +1,7 @@
 package com.oz.project.direction.service
 
 import com.oz.project.api.dto.DocumentDto
-import com.oz.project.direction.entity.Direction
+import com.oz.project.direction.repository.DirectionRepository
 import com.oz.project.gym.dto.GymDto
 import com.oz.project.gym.service.GymSearchService
 import spock.lang.Specification
@@ -9,8 +9,9 @@ import spock.lang.Specification
 class DirectionServiceTest extends Specification {
 
     private GymSearchService gymSearchService = Mock()
+    private DirectionRepository directionRepository = Mock()
 
-    private DirectionService directionService = new DirectionService(gymSearchService)
+    private DirectionService directionService = new DirectionService(gymSearchService, directionRepository)
 
     private List<GymDto> gymList
 
