@@ -48,6 +48,14 @@ dependencies {
 
     // CSV 파싱
     implementation 'com.opencsv:opencsv:5.9'
+
+    // spring retry
+    implementation 'org.springframework.retry:spring-retry'
+
+    // mockWebServer
+    testImplementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.11.0'
+
 }
 
 tasks.named('test') {
