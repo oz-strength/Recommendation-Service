@@ -1,4 +1,4 @@
-package com.oz.project.gym.service;
+package com.oz.project.spot.service;
 
 import com.oz.project.api.dto.DocumentDto;
 import com.oz.project.api.dto.KakaoApiResponseDto;
@@ -14,17 +14,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GymRecommendationService {
+public class SpotRecommendationService {
 
     private final KakaoAddressSearchService kakaoAddressSearchService;
     private final DirectionService directionService;
 
-    public void recommendGymList(String address) {
+    public void recommendSpotList(String address) {
 
         Optional<KakaoApiResponseDto> kakaoApiResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
 
         if (isInvalidResponse(kakaoApiResponseDto)) {
-            log.error("[GymRecommendationService][recommendGymList] - fail >> Input address: {}", address);
+            log.error("[SpotRecommendationService][recommendSpotList] - fail >> Input address: {}", address);
             return;
         }
 

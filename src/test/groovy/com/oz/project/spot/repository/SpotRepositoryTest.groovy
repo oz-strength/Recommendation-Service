@@ -1,64 +1,62 @@
-package com.oz.project.gym.repository
+package com.oz.project.spot.repository
 
 import com.oz.project.AbstractIntegrationContainerBaseTest
-import com.oz.project.gym.entity.Gym
+import com.oz.project.spot.entity.Spot
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import spock.lang.Specification
 
 import java.time.LocalDateTime
 
-class GymRepositoryTest extends AbstractIntegrationContainerBaseTest {
+class SpotRepositoryTest extends AbstractIntegrationContainerBaseTest {
 
     @Autowired
-    private GymRepository gymRepository
+    private SpotRepository spotRepository
 
     def setup() {
-        gymRepository.deleteAll()
+        spotRepository.deleteAll()
     }
 
-    def "GymRepository save"() {
+    def 'spotRepository save'() {
         given:
         String address = "서울 서초구 서초동 1674-1"
         String name = "휘트니스에프엠 교대점"
         double longitude = 127.015892124665
         double latitude = 37.4940331549084
 
-        def gym = Gym.builder()
-                .gymAddress(address)
-                .gymName(name)
+        def spot = Spot.builder()
+                .spotAddress(address)
+                .spotName(name)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build()
 
 
         when:
-        def result = gymRepository.save(gym)
+        def result = spotRepository.save(spot)
 
         then:
-        result.getGymAddress() == address
-        result.getGymName() == name
+        result.getSpotAddress() == address
+        result.getSpotName() == name
         result.getLatitude() == latitude
         result.getLongitude() == longitude
     }
 
-    def "GymRepository saveAll"() {
+    def 'SpotRepository saveAll'() {
         given:
         String address = "서울 서초구 서초동 1674-1"
         String name = "휘트니스에프엠 교대점"
         double longitude = 127.015892124665
         double latitude = 37.4940331549084
 
-        def gym = Gym.builder()
-                .gymAddress(address)
-                .gymName(name)
+        def spot = Spot.builder()
+                .spotAddress(address)
+                .spotName(name)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build()
 
         when:
-        gymRepository.saveAll(Arrays.asList(gym))
-        def result = gymRepository.findAll()
+        spotRepository.saveAll(Arrays.asList(spot))
+        def result = spotRepository.findAll()
 
         then:
         result.size() == 1
@@ -70,14 +68,14 @@ class GymRepositoryTest extends AbstractIntegrationContainerBaseTest {
         String address = "서울 서초구 서초동 1674-1"
         String name = "휘트니스에프엠 교대점"
 
-        def gym = Gym.builder()
-                .gymAddress(address)
-                .gymName(name)
+        def spot = Spot.builder()
+                .spotAddress(address)
+                .spotName(name)
                 .build()
 
         when:
-        gymRepository.save(gym)
-        def result = gymRepository.findAll()
+        spotRepository.save(spot)
+        def result = spotRepository.findAll()
 
         then:
         result.get(0).getCreatedDate().isAfter(now)

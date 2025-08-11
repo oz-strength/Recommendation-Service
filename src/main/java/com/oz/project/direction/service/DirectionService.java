@@ -4,7 +4,7 @@ import com.oz.project.api.dto.DocumentDto;
 import com.oz.project.api.service.KakaoCategorySearchService;
 import com.oz.project.direction.entity.Direction;
 import com.oz.project.direction.repository.DirectionRepository;
-import com.oz.project.gym.service.GymSearchService;
+import com.oz.project.spot.service.SpotSearchService;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,7 +23,7 @@ public class DirectionService {
     private static final int MAX_SEARCH_COUNT = 3; // 헬스장 최대 검색 개수
     private static final double RADIUS_KM = 10.0; // 반경 10km
 
-    private final GymSearchService gymSearchService;
+    private final SpotSearchService spotSearchService;
     private final DirectionRepository directionRepository;
     private final KakaoCategorySearchService kakaoCategorySearchService;
 
@@ -37,19 +37,19 @@ public class DirectionService {
 
         if(Objects.isNull(documentDto)) return Collections.emptyList();
 
-        return gymSearchService.searchGymDtoList()
-                .stream().map(gymDto ->
+        return spotSearchService.searchSpotDtoList()
+                .stream().map(spotDto ->
                         Direction.builder()
                                 .inputAddress(documentDto.getAddressName())
                                 .inputLatitude(documentDto.getLatitude())
                                 .inputLongitude(documentDto.getLongitude())
-                                .targetGymName(gymDto.getGymName())
-                                .targetAddress(gymDto.getGymAddress())
-                                .targetLatitude(gymDto.getLatitude())
-                                .targetLongitude(gymDto.getLongitude())
+                                .targetSpotName(spotDto.getSpotName())
+                                .targetAddress(spotDto.getSpotAddress())
+                                .targetLatitude(spotDto.getLatitude())
+                                .targetLongitude(spotDto.getLongitude())
                                 .distance(
                                         calculateDistance(documentDto.getLatitude(), documentDto.getLongitude(),
-                                                gymDto.getLatitude(), gymDto.getLongitude())
+                                                spotDto.getLatitude(), spotDto.getLongitude())
                                 ).build())
                 .filter(direction -> direction.getDistance() <= RADIUS_KM)
                 .sorted(Comparator.comparing(Direction::getDistance))
@@ -57,7 +57,7 @@ public class DirectionService {
                 .toList();
     }
 
-    // tourist_spot search by category kakao api
+    // spot search by category kakao api
     public List<Direction> buildDirectionListByCategoryApi(DocumentDto inputDocumentDto) {
 
         if(Objects.isNull(inputDocumentDto)) return Collections.emptyList();
@@ -69,7 +69,7 @@ public class DirectionService {
                                 .inputAddress(inputDocumentDto.getAddressName())
                                 .inputLatitude(inputDocumentDto.getLatitude())
                                 .inputLongitude(inputDocumentDto.getLongitude())
-                                .targetGymName(resultDocumentDto.getPlaceName())
+                                .targetSpotName(resultDocumentDto.getPlaceName())
                                 .targetAddress(resultDocumentDto.getAddressName())
                                 .targetLatitude(resultDocumentDto.getLatitude())
                                 .targetLongitude(resultDocumentDto.getLongitude())

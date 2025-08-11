@@ -11,7 +11,7 @@ CREATE TABLE `direction` (
   `target_address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `target_latitude` double NOT NULL,
   `target_longitude` double NOT NULL,
-  `target_gym_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `target_spot_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

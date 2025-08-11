@@ -1,21 +1,21 @@
-DROP TABLE IF EXISTS `gym`;
+DROP TABLE IF EXISTS `spot`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `gym` (
+CREATE TABLE `spot` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `created_date` datetime(6) DEFAULT NULL,
   `modified_date` datetime(6) DEFAULT NULL,
   `latitude` double NOT NULL,
   `longitude` double NOT NULL,
-  `gym_address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `gym_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `spot_address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `spot_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-LOCK TABLES `gym` WRITE;
+LOCK TABLES `spot` WRITE;
 
-INSERT INTO `gym` (
-  `id`, `created_date`, `modified_date`, `latitude`, `longitude`, `gym_address`, `gym_name`
+INSERT INTO `spot` (
+  `id`, `created_date`, `modified_date`, `latitude`, `longitude`, `spot_address`, `spot_name`
 ) VALUES
 (1,'2025-08-09 21:37:52.521045','2025-08-09 21:37:52.521045',37.5038111062408,127.021292917493,'서울특별시 서초구 사평대로 349',          '서초헬스크럽'),
 (2,'2025-08-09 21:37:52.590048','2025-08-09 21:37:52.590048',37.4907432121464,126.984755365172,'서울특별시 서초구 동광로 18',             '그린헬스'),

@@ -27,7 +27,7 @@ public class Direction extends BaseTimeEntity {
     private double inputLongitude;
 
     // 헬스장
-    private String targetGymName;
+    private String targetSpotName;
     private String targetAddress;
     private double targetLatitude;
     private double targetLongitude;

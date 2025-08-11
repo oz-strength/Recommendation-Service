@@ -1,4 +1,4 @@
-package com.oz.project.gym.entity;
+package com.oz.project.spot.entity;
 
 import com.oz.project.BaseTimeEntity;
 import jakarta.persistence.Entity;
@@ -9,25 +9,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Entity(name = "gym")
+@Entity(name = "spot")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Gym extends BaseTimeEntity {
+public class Spot extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String gymName;
-    private String gymAddress;
+    private String spotName;
+    private String spotAddress;
     private double latitude;
     private double longitude;
 
-    public void changeGymAddress(String gymAddress) {
-        this.gymAddress = gymAddress;
+    public void changeSpotAddress(String spotAddress) {
+        this.spotAddress = spotAddress;
     }
 }
