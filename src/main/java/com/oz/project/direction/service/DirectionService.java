@@ -1,6 +1,7 @@
 package com.oz.project.direction.service;
 
 import com.oz.project.api.dto.DocumentDto;
+import com.oz.project.api.service.KakaoCategorySearchService;
 import com.oz.project.direction.entity.Direction;
 import com.oz.project.direction.repository.DirectionRepository;
 import com.oz.project.gym.service.GymSearchService;
@@ -24,6 +25,7 @@ public class DirectionService {
 
     private final GymSearchService gymSearchService;
     private final DirectionRepository directionRepository;
+    private final KakaoCategorySearchService kakaoCategorySearchService;
 
     @Transactional
     public List<Direction> saveAll(List<Direction> directionList) {
@@ -51,6 +53,28 @@ public class DirectionService {
                                 ).build())
                 .filter(direction -> direction.getDistance() <= RADIUS_KM)
                 .sorted(Comparator.comparing(Direction::getDistance))
+                .limit(MAX_SEARCH_COUNT)
+                .toList();
+    }
+
+    // tourist_spot search by category kakao api
+    public List<Direction> buildDirectionListByCategoryApi(DocumentDto inputDocumentDto) {
+
+        if(Objects.isNull(inputDocumentDto)) return Collections.emptyList();
+
+        return kakaoCategorySearchService.requestTouristSpotCategorySearch(inputDocumentDto.getLatitude(), inputDocumentDto.getLongitude(), RADIUS_KM)
+                .getDocumentList()
+                .stream().map(resultDocumentDto ->
+                        Direction.builder()
+                                .inputAddress(inputDocumentDto.getAddressName())
+                                .inputLatitude(inputDocumentDto.getLatitude())
+                                .inputLongitude(inputDocumentDto.getLongitude())
+                                .targetGymName(resultDocumentDto.getPlaceName())
+                                .targetAddress(resultDocumentDto.getAddressName())
+                                .targetLatitude(resultDocumentDto.getLatitude())
+                                .targetLongitude(resultDocumentDto.getLongitude())
+                                .distance(resultDocumentDto.getDistance() * 0.001) // km 단위
+                                .build())
                 .limit(MAX_SEARCH_COUNT)
                 .toList();
     }

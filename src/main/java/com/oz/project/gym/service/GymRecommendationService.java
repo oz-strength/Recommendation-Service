@@ -10,7 +10,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Service
@@ -31,7 +30,8 @@ public class GymRecommendationService {
 
         kakaoApiResponseDto.ifPresent(response -> {
             DocumentDto documentDto = response.getDocumentList().getFirst();
-            List<Direction> directionList = directionService.buildDirectionList(documentDto);
+//            List<Direction> directionList = directionService.buildDirectionList(documentDto);
+            List<Direction> directionList = directionService.buildDirectionListByCategoryApi(documentDto);
             directionService.saveAll(directionList);
         });
 

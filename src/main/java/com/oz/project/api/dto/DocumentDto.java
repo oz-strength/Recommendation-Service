@@ -5,13 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class DocumentDto {
+
+    @JsonProperty("place_name")
+    private String placeName;
 
     @JsonProperty("address_name")
     private String addressName;
@@ -21,4 +23,7 @@ public class DocumentDto {
 
     @JsonProperty("x")
     private double longitude;
+
+    @JsonProperty("distance")
+    private double distance;
 }
