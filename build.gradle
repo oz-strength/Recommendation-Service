@@ -42,6 +42,9 @@ dependencies {
     testImplementation 'org.spockframework:spock-core:2.4-M4-groovy-4.0'
     testImplementation 'org.spockframework:spock-spring:2.4-M4-groovy-4.0'
 
+    // 런타임에 클래스 기반 spock mock을 만들기 위해
+    testImplementation 'net.bytebuddy:byte-buddy:1.17.6'
+
     // testcontainers dependencies
     testImplementation "org.testcontainers:spock:1.21.3"
     testImplementation "org.testcontainers:mariadb:1.21.3"
@@ -64,3 +67,8 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+configurations.configureEach {
+    exclude group: 'commons-logging', module: 'commons-logging'
+}
+

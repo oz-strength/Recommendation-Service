@@ -33,7 +33,8 @@ public class KakaoUriBuilderService {
                 .queryParam("x", longitude)
                 .queryParam("y", latitude)
                 .queryParam("radius", meterRadius)
-                .queryParam("category_group_code", category);
+                .queryParam("category_group_code", category)
+                .queryParam("sort", "distance");
 
         URI uri = uriBuilder.build().encode().toUri();
 

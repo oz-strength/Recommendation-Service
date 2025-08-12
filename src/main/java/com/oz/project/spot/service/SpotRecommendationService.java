@@ -55,7 +55,7 @@ public class SpotRecommendationService {
         return OutputDto.builder()
                 .spotName(direction.getTargetSpotName())
                 .spotAddress(direction.getTargetAddress())
-                .directionUrl("todo")
+                .directionUrl("todo") // todo
                 .roadViewUrl("todo")
                 .distance(String.format("%.2f km", direction.getDistance()))
                 .build();
