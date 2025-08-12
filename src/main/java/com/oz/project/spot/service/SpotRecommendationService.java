@@ -5,11 +5,13 @@ import com.oz.project.api.dto.KakaoApiResponseDto;
 import com.oz.project.api.service.KakaoAddressSearchService;
 import com.oz.project.direction.dto.OutputDto;
 import com.oz.project.direction.entity.Direction;
+import com.oz.project.direction.service.Base62Service;
 import com.oz.project.direction.service.DirectionService;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -20,9 +22,12 @@ public class SpotRecommendationService {
 
     private final KakaoAddressSearchService kakaoAddressSearchService;
     private final DirectionService directionService;
+    private final Base62Service base62Service;
+
+    @Value("${spot.recommendation.base.url}")
+    private String baseUrl;
 
     private static final String ROAD_VIEW_BASE_URL = "https://map.kakao.com/link/roadview/";
-    private static final String DIRECTION_BASE_URL = "https://map.kakao.com/link/map/";
 
     public List<OutputDto> recommendSpotList(String address) {
 
@@ -54,17 +59,10 @@ public class SpotRecommendationService {
 
     private OutputDto convertToOutputDto(Direction direction) {
 
-        String params = String.join(", ", direction.getTargetSpotName(),
-                String.valueOf(direction.getTargetLatitude()), String.valueOf(direction.getTargetLongitude()));
-
-        String url = UriComponentsBuilder.fromUriString(DIRECTION_BASE_URL + params).toUriString();
-
-        log.info("direction params: {}, url: {}", params, url);
-
         return OutputDto.builder()
                 .spotName(direction.getTargetSpotName())
                 .spotAddress(direction.getTargetAddress())
-                .directionUrl(url)
+                .directionUrl(baseUrl + base62Service.encodeDirectionId(direction.getId())) // shorten url
                 .roadViewUrl(ROAD_VIEW_BASE_URL + direction.getTargetLatitude() + "," + direction.getTargetLongitude())
                 .distance(String.format("%.2f km", direction.getDistance()))
                 .build();

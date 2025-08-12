@@ -38,6 +38,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // base62 인코딩
+    implementation 'io.seruco.encoding:base62:0.1.3'
+
     // spock framework dependencies
     testImplementation 'org.spockframework:spock-core:2.4-M4-groovy-4.0'
     testImplementation 'org.spockframework:spock-spring:2.4-M4-groovy-4.0'

@@ -26,16 +26,27 @@ public class DirectionService {
     private final SpotSearchService spotSearchService;
     private final DirectionRepository directionRepository;
     private final KakaoCategorySearchService kakaoCategorySearchService;
+    private final Base62Service base62Service;
 
     @Transactional
     public List<Direction> saveAll(List<Direction> directionList) {
-        if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
-        return  directionRepository.saveAll(directionList);
+        if (CollectionUtils.isEmpty(directionList)) {
+            return Collections.emptyList();
+        }
+        return directionRepository.saveAll(directionList);
     }
+
+    public Direction findById(String encodedId) {
+        Long decodedId = base62Service.decodeDirectionId(encodedId);
+        return directionRepository.findById(decodedId).orElse(null);
+    }
+
 
     public List<Direction> buildDirectionList(DocumentDto documentDto) {
 
-        if(Objects.isNull(documentDto)) return Collections.emptyList();
+        if (Objects.isNull(documentDto)) {
+            return Collections.emptyList();
+        }
 
         return spotSearchService.searchSpotDtoList()
                 .stream().map(spotDto ->
@@ -60,7 +71,9 @@ public class DirectionService {
     // spot search by category kakao api
     public List<Direction> buildDirectionListByCategoryApi(DocumentDto inputDocumentDto) {
 
-        if(Objects.isNull(inputDocumentDto)) return Collections.emptyList();
+        if (Objects.isNull(inputDocumentDto)) {
+            return Collections.emptyList();
+        }
 
         return kakaoCategorySearchService.requestTouristSpotCategorySearch(inputDocumentDto.getLatitude(), inputDocumentDto.getLongitude(), RADIUS_KM)
                 .getDocumentList()
