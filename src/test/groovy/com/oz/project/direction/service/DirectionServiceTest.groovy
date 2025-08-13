@@ -72,7 +72,7 @@ class DirectionServiceTest extends Specification {
                 SpotDto.builder()
                         .id(3L)
                         .spotName("짐박스피트니스")
-                        .spotAddress("주소2")
+                        .spotAddress("주소3")
                         .latitude(37.4748973430136)
                         .longitude(126.866261238015)
                         .build())

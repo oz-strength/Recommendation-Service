@@ -16,8 +16,8 @@ abstract class AbstractIntegrationContainerBaseTest extends Specification{
 
         MY_REDIS_CONTAINER.start()
 
-        System.setProperty("spring.redis.host", MY_REDIS_CONTAINER.getHost())
-        System.setProperty("spring.redis.port", MY_REDIS_CONTAINER.getMappedPort(6379).toString())
+        System.setProperty("spring.data.redis.host", MY_REDIS_CONTAINER.getHost())
+        System.setProperty("spring.data.redis.port", MY_REDIS_CONTAINER.getMappedPort(6379).toString())
 
     }
 }
