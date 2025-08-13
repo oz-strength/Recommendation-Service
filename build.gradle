@@ -67,11 +67,28 @@ dependencies {
 
 }
 
-tasks.named('test') {
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
+
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    systemProperty 'KAKAO_REST_API_KEY', project.findProperty('KAKAO_REST_API_KEY') ?: ''
 }
 
 configurations.configureEach {
     exclude group: 'commons-logging', module: 'commons-logging'
 }
 
+// $ ./gradlew clean build -PKAKAO_REST_API_KEY={api key 값} 명령어로 전체 테스트 및 빌드 후 jar 파일 생성
+processTestResources{
+    boolean hasProperty = project.hasProperty('KAKAO_REST_API_KEY')
+    println "Set kakao rest api key : ${hasProperty}"
+    filesMatching('**/application.yml') {
+        if (hasProperty) {
+            expand(project.properties)
+        } else {
+            throw new GradleException("KAKAO_REST_API_KEY property is not set. Please provide it to run tests.")
+        }
+    }
+}

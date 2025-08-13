@@ -12,8 +12,9 @@ class DirectionServiceTest extends Specification {
     private SpotSearchService spotSearchService = Mock()
     private DirectionRepository directionRepository = Mock()
     private KakaoCategorySearchService kakaoCategorySearchService = Mock()
+    private Base62Service base62Service = Mock()
 
-    private DirectionService directionService = new DirectionService(spotSearchService, directionRepository, kakaoCategorySearchService)
+    private DirectionService directionService = new DirectionService(spotSearchService, directionRepository, kakaoCategorySearchService, base62Service)
 
     private List<SpotDto> spotList
 
