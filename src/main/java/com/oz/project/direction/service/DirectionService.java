@@ -1,14 +1,17 @@
 package com.oz.project.direction.service;
 
 import com.oz.project.api.dto.DocumentDto;
+import com.oz.project.api.dto.KakaoApiResponseDto;
 import com.oz.project.api.service.KakaoCategorySearchService;
 import com.oz.project.direction.entity.Direction;
 import com.oz.project.direction.repository.DirectionRepository;
+import com.oz.project.spot.cache.TouristSpotRedisService;
 import com.oz.project.spot.service.SpotSearchService;
-import java.util.Collections;
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,11 +32,13 @@ public class DirectionService {
     private final DirectionRepository directionRepository;
     private final KakaoCategorySearchService kakaoCategorySearchService;
     private final Base62Service base62Service;
+    private final TouristSpotRedisService touristSpotRedisService;
+
 
     @Transactional
     public List<Direction> saveAll(List<Direction> directionList) {
         if (CollectionUtils.isEmpty(directionList)) {
-            return Collections.emptyList();
+            return List.of();
         }
         return directionRepository.saveAll(directionList);
     }
@@ -42,6 +47,7 @@ public class DirectionService {
         Long decodedId = base62Service.decodeDirectionId(encodedId);
         Direction direction = directionRepository.findById(decodedId).orElse(null);
 
+        assert direction != null;
         String params = String.join(", ", direction.getTargetSpotName(),
                 String.valueOf(direction.getTargetLatitude()), String.valueOf(direction.getTargetLongitude()));
 
@@ -52,7 +58,7 @@ public class DirectionService {
     public List<Direction> buildDirectionList(DocumentDto documentDto) {
 
         if (Objects.isNull(documentDto)) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         return spotSearchService.searchSpotDtoList()
@@ -79,24 +85,42 @@ public class DirectionService {
     public List<Direction> buildDirectionListByCategoryApi(DocumentDto inputDocumentDto) {
 
         if (Objects.isNull(inputDocumentDto)) {
-            return Collections.emptyList();
+            return List.of();
         }
 
-        return kakaoCategorySearchService.requestTouristSpotCategorySearch(inputDocumentDto.getLatitude(), inputDocumentDto.getLongitude(), RADIUS_KM)
-                .getDocumentList()
-                .stream().map(resultDocumentDto ->
-                        Direction.builder()
-                                .inputAddress(inputDocumentDto.getAddressName())
-                                .inputLatitude(inputDocumentDto.getLatitude())
-                                .inputLongitude(inputDocumentDto.getLongitude())
-                                .targetSpotName(resultDocumentDto.getPlaceName())
-                                .targetAddress(resultDocumentDto.getAddressName())
-                                .targetLatitude(resultDocumentDto.getLatitude())
-                                .targetLongitude(resultDocumentDto.getLongitude())
-                                .distance(resultDocumentDto.getDistance() * 0.001) // km 단위
-                                .build())
+        double lat = inputDocumentDto.getLatitude();
+        double lng = inputDocumentDto.getLongitude();
+
+        // 1. 캐시 조회
+        Optional<KakaoApiResponseDto> cached = touristSpotRedisService.getCachedSpots(lat, lng, RADIUS_KM);
+        KakaoApiResponseDto apiResponse;
+
+        if (cached.isPresent()) {
+            log.info("[Cache Hit] Tourist spots for lat={}, lng={}", lat, lng);
+            apiResponse = cached.get();
+        } else {
+            // 2. API 호출
+            apiResponse = kakaoCategorySearchService.requestTouristSpotCategorySearch(lat, lng, RADIUS_KM);
+
+            // 3. 캐시 저장
+            touristSpotRedisService.saveSpotsCache(lat, lng, RADIUS_KM, apiResponse, Duration.ofMinutes(10));
+        }
+
+        // 4. Direction 변환
+        return apiResponse.getDocumentList().stream()
+                .map(result -> Direction.builder()
+                        .inputAddress(inputDocumentDto.getAddressName())
+                        .inputLatitude(lat)
+                        .inputLongitude(lng)
+                        .targetSpotName(result.getPlaceName())
+                        .targetAddress(result.getAddressName())
+                        .targetLatitude(result.getLatitude())
+                        .targetLongitude(result.getLongitude())
+                        .distance(result.getDistance() * 0.001)
+                        .build())
                 .limit(MAX_SEARCH_COUNT)
                 .toList();
+
     }
 
     // Haversine formula

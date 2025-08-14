@@ -3,6 +3,7 @@ package com.oz.project.direction.service
 import com.oz.project.api.dto.DocumentDto
 import com.oz.project.api.service.KakaoCategorySearchService
 import com.oz.project.direction.repository.DirectionRepository
+import com.oz.project.spot.cache.TouristSpotRedisService
 import com.oz.project.spot.dto.SpotDto
 import com.oz.project.spot.service.SpotSearchService
 import spock.lang.Specification
@@ -13,8 +14,9 @@ class DirectionServiceTest extends Specification {
     private DirectionRepository directionRepository = Mock()
     private KakaoCategorySearchService kakaoCategorySearchService = Mock()
     private Base62Service base62Service = Mock()
+    private TouristSpotRedisService touristSpotRedisService = Mock()
 
-    private DirectionService directionService = new DirectionService(spotSearchService, directionRepository, kakaoCategorySearchService, base62Service)
+    private DirectionService directionService = new DirectionService(spotSearchService, directionRepository, kakaoCategorySearchService, base62Service, touristSpotRedisService)
 
     private List<SpotDto> spotList
 

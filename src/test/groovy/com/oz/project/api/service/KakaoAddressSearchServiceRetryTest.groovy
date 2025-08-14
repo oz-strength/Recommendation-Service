@@ -4,6 +4,7 @@ import com.oz.project.AbstractIntegrationContainerBaseTest
 import com.oz.project.api.dto.DocumentDto
 import com.oz.project.api.dto.KakaoApiResponseDto
 import com.oz.project.api.dto.MetaDto
+import com.oz.project.spot.cache.AddressSearchRedisService
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.spockframework.spring.SpringBean
@@ -18,6 +19,9 @@ class KakaoAddressSearchServiceRetryTest extends AbstractIntegrationContainerBas
     private KakaoAddressSearchService kakaoAddressSearchService
 
     @SpringBean
+    private AddressSearchRedisService addressSearchRedisService = Mock()
+
+    @SpringBean
     private KakaoUriBuilderService kakaoUriBuilderService = Mock()
 
     private MockWebServer mockWebServer
@@ -29,6 +33,7 @@ class KakaoAddressSearchServiceRetryTest extends AbstractIntegrationContainerBas
     def setup() {
         mockWebServer = new MockWebServer()
         mockWebServer.start()
+        addressSearchRedisService.getCachedAddress(inputAddress) >> Optional.empty()
         println mockWebServer.port
         println mockWebServer.url("/")
     }
@@ -78,5 +83,4 @@ class KakaoAddressSearchServiceRetryTest extends AbstractIntegrationContainerBas
         2 * kakaoUriBuilderService.buildUriByAddressSearch(inputAddress) >> uri
         !kakaoApiResult.isPresent()
     }
-
 }

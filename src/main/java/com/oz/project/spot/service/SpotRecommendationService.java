@@ -7,13 +7,11 @@ import com.oz.project.direction.dto.OutputDto;
 import com.oz.project.direction.entity.Direction;
 import com.oz.project.direction.service.Base62Service;
 import com.oz.project.direction.service.DirectionService;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Service
@@ -35,7 +33,7 @@ public class SpotRecommendationService {
                 .filter(response -> !isInvalidResponse(response))
                 .map(response -> {
                     DocumentDto documentDto = response.getDocumentList().getFirst();
-                    // 공공기관 헬스장 데이터 및 거리계산 알고리즘 이용
+                    // 공공기관 데이터 및 거리계산 알고리즘 이용
                     // List<Direction> directionList = directionService.buildDirectionList(documentDto);
 
                     // kakao 카테고리를 이용한 장소 검색 api 이용
@@ -47,7 +45,7 @@ public class SpotRecommendationService {
                 })
                 .orElseGet(() -> {
                     log.error("[SpotRecommendationService][recommendSpotList] - fail >> Input address: {}", address);
-                    return Collections.emptyList();
+                    return List.of();
                 });
     }
 

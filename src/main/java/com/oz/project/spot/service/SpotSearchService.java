@@ -1,5 +1,6 @@
 package com.oz.project.spot.service;
 
+import com.oz.project.spot.cache.SpotRedisTemplateService;
 import com.oz.project.spot.dto.SpotDto;
 import com.oz.project.spot.entity.Spot;
 import java.util.List;
@@ -13,8 +14,16 @@ import org.springframework.stereotype.Service;
 public class SpotSearchService {
 
     private final SpotRepositoryService spotRepositoryService;
+    private final SpotRedisTemplateService spotRedisTemplateService;
 
     public List<SpotDto> searchSpotDtoList() {
+
+        // redis
+        List<SpotDto> spotDtoList = spotRedisTemplateService.findAll();
+        if (!spotDtoList.isEmpty()) {
+            log.info("[SpotSearchService][searchSpotDtoList] redis findAll success! - size: {}", spotDtoList.size());
+            return spotDtoList;
+        }
 
         // db
         return spotRepositoryService.findAll()

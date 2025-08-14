@@ -33,6 +33,12 @@ public class SpotRepositoryService {
     }
 
     @Transactional
+    public List<Spot> saveAll(List<Spot> spotList) {
+        if(spotList == null || spotList.isEmpty()) return List.of();
+        return spotRepository.saveAll(spotList);
+    }
+
+    @Transactional
     public void updateSpotAddress(Long id, String address) {
         spotRepository.findById(id).ifPresentOrElse(spot -> {
             spot.changeSpotAddress(address);

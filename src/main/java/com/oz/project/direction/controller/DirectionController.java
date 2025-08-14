@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class DirectionController {
 
     private final DirectionService directionService;
-    private static final String DIRECTION_BASE_URL = "https://map.kakao.com/link/map/";
 
     @GetMapping("/dir/{encodedId}")
     public String searchDirection(@PathVariable("encodedId") String encodedId) {

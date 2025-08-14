@@ -1,7 +1,9 @@
 package com.oz.project.api.service;
 
 import com.oz.project.api.dto.KakaoApiResponseDto;
+import com.oz.project.spot.cache.AddressSearchRedisService;
 import java.net.URI;
+import java.time.Duration;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class KakaoAddressSearchService {
 
     private final RestTemplate restTemplate;
     private final KakaoUriBuilderService kakaoUriBuilderService;
+    private final AddressSearchRedisService addressSearchRedisService;
 
     @Value("${kakao.rest.api.key}")
     private String kakaoRestApiKey;
@@ -38,6 +41,14 @@ public class KakaoAddressSearchService {
             return Optional.empty();
         }
 
+        // 캐시 조회
+        Optional<KakaoApiResponseDto> cachedAddress = addressSearchRedisService.getCachedAddress(address);
+        if (cachedAddress.isPresent()) {
+            log.info("[Cache Hit] address : {}", address);
+            return cachedAddress;
+        }
+
+        // Kakao API 호출
         URI uri = kakaoUriBuilderService.buildUriByAddressSearch(address);
 
         HttpHeaders headers = new HttpHeaders();
@@ -49,6 +60,7 @@ public class KakaoAddressSearchService {
                 .getBody();
 
         if (response != null && response.getDocumentList() != null && !response.getDocumentList().isEmpty()) {
+            addressSearchRedisService.saveAddressCache(address, response, Duration.ofHours(1));
             return Optional.of(response);
         }
 
