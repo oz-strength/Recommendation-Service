@@ -1,6 +1,6 @@
 # :pushpin: Recommendation-Service
 >관광지 길찾기 서비스  
->https://13.125.59.117
+>http://13.125.59.117
 
 </br>
 
